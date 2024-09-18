@@ -1,14 +1,14 @@
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext({});
 
-export const ROLE = {
+export const Role = {
   SUPER: "SUPER",
   ADM: "ADM",
   USER: "USER",
 };
 
-export function AuthContext({ children }) {
+export function AuthProvider({ children }) {
   const [user, setUser] = useState({
     autenticated: null,
     user: null,
@@ -19,27 +19,27 @@ export function AuthContext({ children }) {
     if (email === "super@email.com" && password === "Super123!") {
       setUser({
         autenticated: true,
-        user: { id: 1, name: "Super Usuário", email, role: "SUPER" },
+        user: { id: 1, name: "Super Usuário", email },
         role: Role.SUPER,
       });
     } else if (email === "adm@email.com" && password === "Adm123!") {
-        setUser({
-            autenticated: true,
-            user: { id: 2, name: "Administrador", email, role: "SUPER" },
-            role: Role.ADM,
-          });
-    }else if (email === "user@email.com" && password === "User123!") {
-        setUser({
-            autenticated: true,
-            user: { id: 3, name: "Usuário Comum", email, role: "SUPER" },
-            role: Role.USER,
-          });
+      setUser({
+       autenticated: true, 
+        user: { id: 2, name: "Administrador", email },
+        role: Role.ADM,
+      });
+    } else if (email === "user@email.com" && password === "User123!") {
+      setUser({
+        autenticated: true,
+        user: { id: 3, name: "Usuário Comum", email },
+        role: Role.USER,
+      });
     } else {
-        setUser({
-            autenticated: false,
-            user: null,
-            role: null,
-          });
+      setUser({
+        autenticated: false,
+        user: null,
+        role: null,
+      });
     }
   };
   const signOut = async () => {
