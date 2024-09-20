@@ -29,7 +29,10 @@ export default function App() {
         }
       />
       <Button title="Sobre" onPress={() => router.push("/about")} />
-        <Button title="Sair do Aplicativo" onPress={() => BackHandler.exitApp()} /> 
+      <Button
+        title="Sair do Aplicativo"
+        onPress={() => BackHandler.exitApp()}
+      />
       <StatusBar style="auto" />
     </View>
   );
