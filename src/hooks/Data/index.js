@@ -13,7 +13,7 @@ export function DataProvider({ children }) {
       onInit={initializeDatabase}
     >{children}</SQLiteProvider>
   </DataContext.Provider>);
-}
+};
 
 export function useData() {
   const context = useContext(DataContext);

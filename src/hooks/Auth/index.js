@@ -19,17 +19,22 @@ export function AuthProvider({ children }) {
 
   const signIn = async ({ email, password }) => {
     const response = await authUser({ email, password });
+    console.log(response);
+
     if (!response) {
       setUser({
         autenticated: false,
         user: null,
         role: null,
       });
+      throw new Error("Usuário ou senha inválidos");
     }
+   
+
     setUser({
       autenticated: true,
       user: responsive,
-      role:response.role,
+      role: response.role,
     });
   };
   const signOut = async () => {
