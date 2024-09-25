@@ -1,9 +1,16 @@
-import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
-import { Alert, BackHandler, Button, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  BackHandler,
+  Button,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { useAuth } from "../hooks/Auth";
 import { router } from "expo-router";
-import { TextInput } from "react-native-gesture-handler";
+import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 
 export default function App() {
@@ -12,37 +19,41 @@ export default function App() {
   const [password, setPassword] = useState("A123456a!");
   const [passwordVisibility, setPasswordVisibility] = useState(false);
 
-  const tooglePasswordVisibility = () => {
+  const togglePasswordVisibility = () => {
     setPasswordVisibility(!passwordVisibility);
   };
 
   const handleEntrarSuper = async () => {
     try {
       await signIn({ email, password });
+      
     } catch (error) {
-      Alert.alert("Erro", error.message);
+      Alert.alert("Erro", error.message); 
       console.log(error);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}> aplicativo pronto para usar</Text>
+      <Text style={styles.title}>Aplicativo Pronto para Usar</Text>
 
       <View style={styles.inputbox}>
-        <Ionicons name="mail-open-outline" size={20} color="black" />
+        <Ionicons name="mail-open-outline" size={20} color="pink" />
         <TextInput
-          style={styles.container}
+          style={styles.emailinput}
           placeholder="E-mail"
+          placeholderTextColor="pink"
           value={email}
           onChangeText={setEmail}
         />
       </View>
+
       <View style={styles.inputbox}>
-        <Ionicons name="lock-closed-outline" size={20} color="black" />
+        <Ionicons name="lock-closed-outline" size={20} color="pink" />
         <TextInput
-          style={styles.container}
-          placeholder="senha"
+          style={styles.emailinput}
+          placeholder="Senha"
+          placeholderTextColor="pink"
           value={password}
           onChangeText={setPassword}
           secureTextEntry={passwordVisibility}
@@ -50,19 +61,22 @@ export default function App() {
         <Ionicons
           name={passwordVisibility ? "eye-off-outline" : "eye-outline"}
           size={20}
-          color="black"
-          onPress={tooglePasswordVisibility}
+          color="pink"
+          onPress={togglePasswordVisibility}
         />
       </View>
 
       <Button
-        style={styles.button}
+        color="green"
         title="Entrar"
         onPress={handleEntrarSuper}
       />
-
-      <Button title="Sobre" onPress={() => router.push("/about")} />
-
+      <Button color="green" title="Sobre" onPress={() => router.push("/about")} />
+      <Button 
+        color="red"
+        title="Sair do Aplicativo"
+        onPress={() => BackHandler.exitApp()}
+      />
       <StatusBar style="auto" />
     </View>
   );
@@ -71,28 +85,31 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#000", 
     alignItems: "center",
     justifyContent: "center",
     gap: 15,
   },
   title: {
-    fontFamily: "light",
+    fontFamily: "bold",
     fontSize: 20,
+    color: "white", 
   },
   inputbox: {
     flexDirection: "row",
     gap: 10,
-    marginHorizontal: 40,
     marginVertical: 10,
+    marginHorizontal: 40,
     alignItems: "center",
   },
-  emailInput: {
+  emailinput: {
     flex: 1,
     fontFamily: "regular",
     fontSize: 20,
+    color: "green", 
   },
   button: {
     width: "100%",
   },
 });
+

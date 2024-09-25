@@ -17,12 +17,12 @@ const StackLayout = () => {
       } else router.replace("index");
     } else {
       router.replace("(protected)");
-    }
+    };
   }, [user]);
   return (
     <Stack>
-      <Stack.Screen name="index" opnition={{ headerShown: false }} />
-      <Stack.Screen name="(protected)" opnition={{ headerShown: false }} />
+      <Stack.Screen name="index" options ={{ headerShown: false }} />
+      <Stack.Screen name="(protected)" options ={{ headerShown: false }} />
     </Stack>
   );
 };

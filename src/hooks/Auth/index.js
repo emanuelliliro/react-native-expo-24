@@ -1,8 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useUserDatabase } from "../../database/useUserDatabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { View } from "react-native-reanimated/lib/typescript/Animated";
-import { Text } from "react-native";
+import { View, ActivityIndicator, Text } from "react-native";
 
 const AuthContext = createContext({});
 
@@ -27,7 +26,7 @@ export function AuthProvider({ children }) {
         setUser({
           autenticated: true,
           user: JSON.parse(storagedUser),
-          role: JSON.parse(storagedUser),
+          role: JSON.parse(storagedUser).role,
         });
       } else {
         setUser({
@@ -36,7 +35,7 @@ export function AuthProvider({ children }) {
           role: null,
         });
       }
-    };
+    }
     loadStoragedData();
   }, []);
 
@@ -53,8 +52,6 @@ if (user?.autenticated === null) {
 }
   const signIn = async ({ email, password }) => {
     const response = await authUser({ email, password });
-  
-
     if (!response) {
       setUser({
         autenticated: false,
@@ -64,17 +61,17 @@ if (user?.autenticated === null) {
       throw new Error("Usuário ou senha inválidos");
     }
    
-    await AsyncStorage.deleteItem("@payment:user", JSON.stringify(response));
+    await AsyncStorage.setItem("@payment:user", JSON.stringify(response));
     setUser({
       autenticated: true,
-      user: responsive,
+      user: response,
       role: response.role,
     });
   };
   const signOut = async () => {
-    await AsyncStorage.deleteItem("@payment:user");
+    await AsyncStorage.removeItem("@payment:user");
     setUser({});
-  };
+  }
  
 
   return (
