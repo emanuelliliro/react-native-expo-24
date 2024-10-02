@@ -1,13 +1,17 @@
-import { Button, Text, View } from "react-native";
-import { useAuth } from "../../hooks/Auth";
+import { Text, View } from "react-native";
+
+import { Banner } from "../../components/Banner";
 
 export default function Home() {
-  const { signOut } = useAuth();
-
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text> Home </Text>
-
+    <View style={{ flex: 1 }}>
+     
+ <Banner />
+    
+     <View style={{ flex: 1,  alignItems: "center" }}>
+     <Text> Home </Text>
+     </View>
     </View>
   );
 }
+     

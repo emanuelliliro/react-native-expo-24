@@ -61,7 +61,7 @@ if (user?.autenticated === null) {
       throw new Error("Usuário ou senha inválidos");
     }
    
-    await AsyncStorage.setItem("@payment:user", JSON.stringify(response));
+    await AsyncStorage.setItemtItem("@payment:user", JSON.stringify(response));
     setUser({
       autenticated: true,
       user: response,
@@ -70,7 +70,11 @@ if (user?.autenticated === null) {
   };
   const signOut = async () => {
     await AsyncStorage.removeItem("@payment:user");
-    setUser({});
+    setUser({
+      autenticated: false,
+      user: null,
+      role: null,
+    });
   }
  
 

@@ -1,8 +1,9 @@
-import { Drawer } from "expo-router/drawer";
-import { Ionicons } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Image, Text, TouchableOpacity, View } from "react-native";
-import {DrawerContentScrollView,DrawerItemList,} from "@react-navigation/drawer";
+import {DrawerContentScrollView, DrawerItemList,} from "@react-navigation/drawer";
+import { Drawer } from "expo-router/drawer";
+import { Image, Text, TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { View } from "react-native";
 import { useAuth } from "../../hooks/Auth/index";
 
 function CustomDrawerContext(props) {
@@ -10,38 +11,45 @@ function CustomDrawerContext(props) {
 
   return (
     <View style={{ flex: 1 }}>
-      <View>
-        <View style={{ marginTop: 20, justifyContent: "center", alignItems:"center", backgroundColor: "#fofofo", paddingVertical: 10,}}>
-        
-          <Image
-              source={{
-                uri: "https://github.com/emanuelliliro.png",
-              }}
-                style={{ width: 100, height: 100, borderRadius: 50, margin: 10 }}
-                resizeMethod="auto" 
-                />
-          <Text
-          style={{ textAlign: "center", fontSize: 16, fontFamily: "regular" }} >
-           {user.user.nome}
-
-          </Text>
-        </View>
+      <View
+        style={{
+          marginTop: 20,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#f0f0f0",
+          paddingVertical: 10,
+        }}
+      >
+        <Image
+          source={{
+            uri: "https://github.com/emanuelliliro.png",
+          }}
+          style={{ width: 100, height: 100, borderRadius: 100 }}
+        />
+        <Text
+          style={{ textAlign: "center", fontSize: 16, fontFamily: "light",padding: 10}}
+        >
+          {user?.user?.nome}
+        </Text>
       </View>
       <DrawerContentScrollView {...props}>
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
+
       <TouchableOpacity
+        onPress={() => signOut()}
         style={{
-          width: "100%",
           justifyContent: "center",
           alignItems: "center",
-          height: "50",
+          height: 50,
           margin: "10",
           backgroundColor: "#0000ff",
           borderRadius: 5,
         }}
       >
-        <Text style={{ color: "white", fontFamily: "bold" }}>Deslogar</Text>
+        <Text style={{ fontSize: 20, fontFamily: "light", color: "white" }}>
+          Deslogar
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -57,7 +65,7 @@ const DrawerLayout = () => {
             drawerLabel: "Principal",
             headerTitle: "Principal",
             drawerIcon: () => (
-              <Ionicons name="home-outline" size={20} color="black" />
+              <Ionicons name="home-outline" size={25} color="lightblue" />
             ),
           }}
         />
@@ -67,7 +75,7 @@ const DrawerLayout = () => {
             drawerLabel: "Listagem",
             headerTitle: "Listagem",
             drawerIcon: () => (
-              <Ionicons name="list-outline" size={20} color="black" />
+              <Ionicons name="list-outline" size={25} color="lightblue" />
             ),
           }}
         />
@@ -77,7 +85,11 @@ const DrawerLayout = () => {
             drawerLabel: "Pagamentos",
             headerTitle: "Pagamentos",
             drawerIcon: () => (
-              <Ionicons name="diamond-outline" size={20} color="black" />
+              <Ionicons
+                name="finger-print-outline"
+                size={25}
+                color="lightblue"
+              />
             ),
           }}
         />

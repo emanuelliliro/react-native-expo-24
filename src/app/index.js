@@ -1,13 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import {
-  Alert,
-  BackHandler,
-  Button,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import {Alert, BackHandler,Button,StyleSheet, Text,TextInput, View,} from "react-native";
 import { useAuth } from "../hooks/Auth";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -26,15 +18,15 @@ export default function App() {
   const handleEntrarSuper = async () => {
     try {
       await signIn({ email, password });
-      
     } catch (error) {
-      Alert.alert("Erro", error.message); 
+      Alert.alert("Erro", error.message);
       console.log(error);
     }
   };
 
   return (
     <View style={styles.container}>
+      
       <Text style={styles.title}>Aplicativo Pronto para Usar</Text>
 
       <View style={styles.inputbox}>
@@ -66,13 +58,13 @@ export default function App() {
         />
       </View>
 
+      <Button color="green" title="Entrar" onPress={handleEntrarSuper} />
       <Button
         color="green"
-        title="Entrar"
-        onPress={handleEntrarSuper}
+        title="Sobre"
+        onPress={() => router.push("/about")}
       />
-      <Button color="green" title="Sobre" onPress={() => router.push("/about")} />
-      <Button 
+      <Button
         color="red"
         title="Sair do Aplicativo"
         onPress={() => BackHandler.exitApp()}
@@ -85,7 +77,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000", 
+    backgroundColor: "#000",
     alignItems: "center",
     justifyContent: "center",
     gap: 15,
@@ -93,7 +85,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "bold",
     fontSize: 20,
-    color: "white", 
+    color: "white",
   },
   inputbox: {
     flexDirection: "row",
@@ -106,10 +98,9 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: "regular",
     fontSize: 20,
-    color: "green", 
+    color: "green",
   },
   button: {
     width: "100%",
   },
 });
-
