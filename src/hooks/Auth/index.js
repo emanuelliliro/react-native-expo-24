@@ -39,17 +39,6 @@ export function AuthProvider({ children }) {
     loadStoragedData();
   }, []);
 
-
-if (user?.autenticated === null) {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text style={{fontSize: 28, marginTop: 15 }}>
-        Carregando dados do usuário
-      </Text>
-      <ActivityIndicator size='large' color='#0000ff'/>
-    </View>
-  );
-}
   const signIn = async ({ email, password }) => {
     const response = await authUser({ email, password });
     if (!response) {
@@ -61,7 +50,7 @@ if (user?.autenticated === null) {
       throw new Error("Usuário ou senha inválidos");
     }
    
-    await AsyncStorage.setItemtItem("@payment:user", JSON.stringify(response));
+    await AsyncStorage.setItem("@payment:user", JSON.stringify(response));
     setUser({
       autenticated: true,
       user: response,

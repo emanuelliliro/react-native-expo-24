@@ -13,25 +13,25 @@ export function Banner() {
 
     return (
         <View style={styles.container}>
-            <PagerView initialPage={0} style={styles.content} onPageSelected={onPageSelected}>
-                <View key="1"style={[styles.page, { backgroundColor: 'black' }]}>
+            <PagerView 
+            initialPage={0}
+             style={styles.content} 
+             onPageSelected={onPageSelected}
+             >
+                <View key="1"style={styles.page}>
                     <Text style={styles.text}>1</Text>
                 </View>
-                <View key="2" style={[styles.page, { backgroundColor: 'green' }]}>
+                <View key="2" style={styles.page}>
                     <Text style={styles.text}> 2</Text>
                 </View>
-                <View key="3" style={[styles.page, { backgroundColor: 'pink' }]}>
+                <View key="3" style={styles.page}>
                     <Text style={styles.text}> 3</Text>
                 </View>
             </PagerView>
-
-
-
-
             <View style={styles.bulletContent}>
-                <View style={[styles.bullet, page === 0 && styles.activeBullet,{ backgroundColor: 'black' },]}></View>
-                <View style={[styles.bullet, page === 0 && styles.activeBullet,{ backgroundColor: 'green' },]}></View>
-                <View style={[styles.bullet, page === 0 && styles.activeBullet,{ backgroundColor: 'pink' },]}></View>
+                <View style={[styles.bullet, page === 0 && styles.activeBullet,{ backgroundColor: 'purple' },]}></View>
+                <View style={[styles.bullet, page === 1 && styles.activeBullet,{ backgroundColor: 'blue' },]}></View>
+                <View style={[styles.bullet, page === 2 && styles.activeBullet,{ backgroundColor: 'pink' },]}></View>
             </View>
         </View>
     );
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     page: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#e8ede7',
+        backgroundColor: '#fff',
         padding: 20,
     },
     bulletContent: {
@@ -62,9 +62,8 @@ const styles = StyleSheet.create({
     bullet: {
         width: 10,
         height: 10,
-        
-        backgroundColor: '#999',
-        margin: 5,
+        borderRadius: 5,
+        margin: 10,
     },
     activeBullet: {
         backgroundColor: '#8da59f',
@@ -72,6 +71,6 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 40,
         fontFamily: 'bold',
-        color: '#fff',
+        color: 'black',
     },
 });

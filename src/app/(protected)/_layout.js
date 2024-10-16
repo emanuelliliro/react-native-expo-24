@@ -1,5 +1,8 @@
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import {DrawerContentScrollView, DrawerItemList,} from "@react-navigation/drawer";
+import {
+  DrawerContentScrollView,
+  DrawerItemList,
+} from "@react-navigation/drawer";
 import { Drawer } from "expo-router/drawer";
 import { Image, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -27,7 +30,12 @@ function CustomDrawerContext(props) {
           style={{ width: 100, height: 100, borderRadius: 100 }}
         />
         <Text
-          style={{ textAlign: "center", fontSize: 16, fontFamily: "light",padding: 10}}
+          style={{
+            textAlign: "center",
+            fontSize: 16,
+            fontFamily: "light",
+            padding: 10,
+          }}
         >
           {user?.user?.nome}
         </Text>
@@ -58,7 +66,7 @@ function CustomDrawerContext(props) {
 const DrawerLayout = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Drawer drawerContext={(props) => <CustomDrawerContext {...props} />}>
+      <Drawer drawerContent={(props) => <CustomDrawerContext {...props} />}>
         <Drawer.Screen
           name="index"
           options={{

@@ -8,9 +8,6 @@ export default function Home() {
      
  <Banner />
     
-     <View style={{ flex: 1,  alignItems: "center" }}>
-     <Text> Home </Text>
-     </View>
     </View>
   );
 }

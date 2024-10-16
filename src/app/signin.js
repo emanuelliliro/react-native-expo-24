@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import {Alert, BackHandler,Button,StyleSheet, Text,TextInput, View,} from "react-native";
+import {Alert, BackHandler,StyleSheet, Text,TextInput, View,} from "react-native";
 import { useAuth } from "../hooks/Auth";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -27,7 +27,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       
-      <Text style={styles.title}>Aplicativo Pronto para Usar</Text>
+      <Text style={styles.title}> FlorArte`s </Text>
 
       <View style={styles.inputbox}>
         <Ionicons name="mail-open-outline" size={20} color="pink" />
@@ -58,17 +58,17 @@ export default function App() {
         />
       </View>
 
-      <Button color="green" title="Entrar" onPress={handleEntrarSuper} />
-      <Button
-        color="green"
-        title="Sobre"
-        onPress={() => router.push("/about")}
-      />
-      <Button
-        color="red"
-        title="Sair do Aplicativo"
-        onPress={() => BackHandler.exitApp()}
-      />
+    
+      <TouchableOpacity onPress={handleEntrarSuper} style={styles.button}>
+        <Text style={styles.textbutton}>Entrar</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => router.push("about")} style={styles.button}>
+        <Text style={styles.textbutton}>Sobre</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => BackHandler.exitApp()} style={styles.button}>
+        <Text style={styles.textbutton}>Sair</Text>
+      </TouchableOpacity>
       <StatusBar style="auto" />
     </View>
   );
