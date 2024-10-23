@@ -16,8 +16,8 @@ export async function initializeDatabase(database) {
      );
      CREATE TABLE IF NOT EXISTS payment (
      id INTEGER PRIMARY KEY AUTOINCREMENT,
-     user_id INTEGER, NOT NULL,
-     user_cadastro INTEGER, NOT NULL,
+     user_id INTEGER NOT NULL,
+     user_cadastro INTEGER NOT NULL,
      valor_pago REAL NOT NULL,
      data_pagamento DATE NOT NULL,
      observacao TEXT,

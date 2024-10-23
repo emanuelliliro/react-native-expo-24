@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useUserDatabase } from "../../database/useUserDatabase";
+import { usePaymentsDatabase } from "../../database/useUserDatabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View, ActivityIndicator, Text } from "react-native";
 
@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
     user: null,
     role: null,
   });
-  const { authUser } = useUserDatabase();
+  const { authUser } = usePaymentsDatabase();
 
   useEffect(() => {
     const loadStoragedData = async () => {
