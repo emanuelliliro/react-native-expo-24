@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 import { useAuth } from "../hooks/Auth";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 
@@ -19,6 +19,7 @@ export default function App() {
   const [password, setPassword] = useState("A123456a!");
   const [passwordVisibility, setPasswordVisibility] = useState(false);
 
+  const router = useRouter();
   const togglePasswordVisibility = () => {
     setPasswordVisibility(!passwordVisibility);
   };
@@ -71,16 +72,23 @@ export default function App() {
       <TouchableOpacity
         onPress={() => router.push("about")}
         style={styles.button}
+      
       >
         <Text style={styles.textbutton}>Sobre</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => BackHandler.exitApp()}
-        style={styles.button}
-      >
-        <Text style={styles.textbutton}>Sair</Text>
-      </TouchableOpacity>
+  onPress={() => {
+    if (Platform.OS === "android") { // Correção para verificar a plataforma
+      BackHandler.exitApp();
+    } else {
+      Alert.alert("Sair", "Essa função só está disponível no Android.");
+    }
+  }}
+  style={styles.button}
+>
+  <Text style={styles.textbutton}>Sair</Text>
+</TouchableOpacity>
       <StatusBar style="auto" />
     </View>
   );
@@ -115,4 +123,10 @@ const styles = StyleSheet.create({
   button: {
     width: "100%",
   },
+  textbutton: {
+    textAlign: "center",
+    color: "white",
+    fontSize: 16,
+  },
+  
 });
