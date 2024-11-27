@@ -1,225 +1,273 @@
-import { Button, StyleSheet, View,BackHandler  } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { router } from "expo-router";
+import { useEffect, useRef, useState } from "react";
+import {
+    View,
+    StyleSheet,
+    TextInput,
+    Button,
+    Text,
+    KeyboardAvoidingView,
+    Platform,
+    Alert,
+    TouchableOpacity,
+} from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
-import {Picker} from '@react-native-picker/picker';
-import { useState } from "react";
-import { useNavigation } from '@react-navigation/native';
+import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { useAuth } from "../../hooks/Auth/index";
+import { usePaymentsDatabase } from "../../database/usePaymentsDatabase";
+import { useUsersDatabase } from "../../database/useUsersDatabase";
 
-export default function Payments() {
-  const navigation = useNavigation(); 
-  const [valor,setValor] = useState("0,00");
-  const[sugestoes, setSugestoes] = useState([{
-      "id": 1,
-      "nome": "Dorian Lean"
-    }, {
-      "id": 2,
-      "nome": "Kathy Pulbrook"
-    }, {
-      "id": 3,
-      "nome": "Whitney Raccio"
-    }, {
-      "id": 4,
-      "nome": "Marion Ambrus"
-    }, {
-      "id": 5,
-      "nome": "Kelvin Curman"
-    }, {
-      "id": 6,
-      "nome": "Con Vatcher"
-    }, {
-      "id": 7,
-      "nome": "Malina Kurten"
-    }, {
-      "id": 8,
-      "nome": "Casey Mc Queen"
-    }, {
-      "id": 9,
-      "nome": "Kirbie Colbron"
-    }, {
-      "id": 10,
-      "nome": "Dinny Such"
-    }, {
-      "id": 11,
-      "nome": "Cullie Dionisetto"
-    }, {
-      "id": 12,
-      "nome": "Gare McRonald"
-    }, {
-      "id": 13,
-      "nome": "Iosep Clarycott"
-    }, {
-      "id": 14,
-      "nome": "Bourke Youde"
-    }, {
-      "id": 15,
-      "nome": "Jeannette Mont"
-    }, {
-      "id": 16,
-      "nome": "Dewitt Gritten"
-    }, {
-      "id": 17,
-      "nome": "Britni Harring"
-    }, {
-      "id": 18,
-      "nome": "Meris Tite"
-    }, {
-      "id": 19,
-      "nome": "Boniface Blackie"
-    }, {
-      "id": 20,
-      "nome": "Cecil Bass"
-    }, {
-      "id": 21,
-      "nome": "Bibbie Fegan"
-    }, {
-      "id": 22,
-      "nome": "Sharai Pickover"
-    }, {
-      "id": 23,
-      "nome": "Faina Meaddowcroft"
-    }, {
-      "id": 24,
-      "nome": "Cassey Piris"
-    }, {
-      "id": 25,
-      "nome": "Lilian Kerr"
-    }, {
-      "id": 26,
-      "nome": "Elliot Saint"
-    }, {
-      "id": 27,
-      "nome": "Amity Gudger"
-    }, {
-      "id": 28,
-      "nome": "Vonny Cowwell"
-    }, {
-      "id": 29,
-      "nome": "Domeniga Ceney"
-    }, {
-      "id": 30,
-      "nome": "Melita Demangeot"
-    }, {
-      "id": 31,
-      "nome": "Fallon Monkeman"
-    }, {
-      "id": 32,
-      "nome": "Enrico Billyeald"
-    }, {
-      "id": 33,
-      "nome": "Rudolph Taylor"
-    }, {
-      "id": 34,
-      "nome": "Nicolina Spick"
-    }, {
-      "id": 35,
-      "nome": "Justin Arenson"
-    }
-  ]);
+import { z } from "zod";
 
-  
-  const handleSave = () => {
-    // Aqui você pode processar as informações, como validar os campos ou enviá-los para uma API
-    alert('Informações salvas');
-  };
-  <Button title="Salvar" onPress={handleSave} />  
+const paymentSchema = z.object({
+    valor_pago: z.number().gt(0),
+    user_id: z.number().int().positive(),
+    user_cadastro: z.number().int().positive(),
+    data_pagamento: z.string().datetime(),
+    numero_recibo: z.string(),
+    observacao: z.string().optional(),
+});
 
+export default function Payment() {
+    const [valor, setValor] = useState("0,00");
+    const [sugestoes, setSugestoes] = useState([]);
+    const [id, setId] = useState(1);
+    const [data, setData] = useState(new Date());
+    const [viewCalendar, setViewCalendar] = useState(false);
+    const [observacao, setObservacao] = useState("");
+    const [numeroRecibo, setNumeroRecibo] = useState("");
+    const valueRef = useRef();
+    const { user } = useAuth();
+    const { createPayment } = usePaymentsDatabase();
+    const { getAllUsers } = useUsersDatabase();
 
-const [id,setId] = useState(1);
-const [data,setData] = =useState(new Date());
-const [viewCalendar,setViewCalendar] = useState (false);
-const handleCalendar = (event, selectedDate) => {
-  setData(selectedDate);
-  setViewCalendar(false);
+    useEffect(() => {
+        (async () => {
+            valueRef?.current?.focus();
+            try {
+                const users = await getAllUsers();
+                console.log("Usuários carregados:", users); // Verificação dos dados
+                setSugestoes(users);
+                setId(users[0]?.id || 1); // Define um ID padrão
+            } catch (error) {
+                console.log("Erro ao carregar usuários:", error);
+            }
+        })();
+    }, []);
+
+    const handleCalendar = (event, selectedDate) => {
+        setViewCalendar(false);
+        if (selectedDate) setData(selectedDate);
+    };
+
+    const handleSubmit = async () => {
+        const payment = {
+            user_id: id,
+            user_cadastro: Number(user.user.id),
+            valor_pago: parseFloat(valor.replace(",", ".")),
+            data_pagamento: data.toISOString(),
+            numero_recibo: numeroRecibo,
+            observacao,
+        };
+
+        try {
+            await paymentSchema.parseAsync(payment);
+            await createPayment(payment);
+            Alert.alert("Sucesso", "Pagamento registrado com sucesso!");
+            setValor("0,00");
+            setObservacao("");
+            setNumeroRecibo("");
+            valueRef?.current?.focus();
+        } catch (error) {
+            Alert.alert("Erro", `Erro ao inserir pagamento: ${error.message}`);
+            console.log(error);
+        }
+    };
+
+    return (
+        <KeyboardAvoidingView
+            style={{ flex: 1, backgroundColor: '#fff' }}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+            <View style={styles.containerprincipal}>
+                <Text style={styles.titulo}>Dados do pagamento</Text>
+
+                <View style={styles.inputView}>
+                    <Ionicons name="wallet-outline" size={23} color="#777" />
+                    <TextInput
+                        placeholder="Valor"
+                        keyboardType="decimal-pad"
+                        style={styles.inputValor}
+                        value={valor}
+                        onChangeText={(text) => setValor(text)}
+                        ref={valueRef}
+                    />
+                </View>
+
+                <View style={styles.inputView}>
+                    <Ionicons name="cash-outline" size={23} color="#777" />
+                    <TextInput
+                        placeholder="Número do Recibo"
+                        keyboardType="default"
+                        style={styles.inputrecibo}
+                        value={numeroRecibo}
+                        onChangeText={setNumeroRecibo}
+                    />
+                </View>
+
+                <View style={styles.inputView}>
+                    <Ionicons name="person-outline" size={23} color="#777" />
+                    <Picker
+                        selectedValue={id}
+                        onValueChange={(itemValue) => setId(itemValue)}
+                        style={styles.picker}
+                    >
+                        {sugestoes.length === 0 ? (
+                            <Picker.Item label="Nenhum usuário disponível" value={0} />
+                        ) : (
+                            sugestoes.map((user) => (
+                                <Picker.Item key={user.id} label={user.nome} value={user.id} />
+                            ))
+                        )}
+                    </Picker>
+                </View>
+
+                <View style={styles.inputView}>
+                    <MaterialCommunityIcons name="calendar-month" size={23} color="#777" />
+                    <Text onPress={() => setViewCalendar(true)} style={styles.inputData}>
+                        {data.toLocaleDateString()}
+                    </Text>
+                    {viewCalendar && (
+                        <DateTimePicker
+                            value={data}
+                            onChange={handleCalendar}
+                            mode="date"
+                        />
+                    )}
+                </View>
+
+                <View style={styles.inputView}>
+                    <MaterialCommunityIcons name="message-badge-outline" size={24} color="#777" />
+                    <TextInput
+                        placeholder="Observações"
+                        style={styles.inputObservacao}
+                        value={observacao}
+                        onChangeText={setObservacao}
+                        multiline={true}
+                    />
+                </View>
+
+                <View style={styles.botaoContainer}>
+                    <TouchableOpacity style={styles.botao} onPress={handleSubmit}>
+                        <Text style={styles.textobotao}>Salvar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.botao} onPress={() => router.back()}>
+                        <Text style={styles.textobotao}>Cancelar</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </KeyboardAvoidingView>
+    );
 }
-const [observacao,setObservacao] = useState("");
 
-return (
-  <View style={styles.content}>
-    <Text> inserir Pagamentos </Text>
-    <View style={styles.inputView}>
-    <Ionicons name="wallet-outline" size={24} color="black" /> 
-<TextInput 
-placeholder="Valor" 
-keyboardType="decimal-pad"
- style={styles.inputValor}
- value={valor}
- onChangeText={setValor}
- />
-    </View>
-    <View style={styles.inputView}> 
-          <Picker selectedValue={id} 
-          onValueChange={(itemValue, index) => {
-            setId(itemValue);
-          }}
-          style={{width: "100%"}}
-          >  
-          {sugestoes?.map((item) => {
-            return(
-            <Picker.Item key={item.id} label={item.nome} value={item.id} />
-         );
-          })}
-           </Picker>                
-    </View>
-    <View style={styles.inputView}> 
-    <Text onPress={() => setViewCalendar(true)} style={styles.inputData}>
-       {data.toLocaleDateString().split("T")[0]}
-        </Text>
-      {viewCalendar && (
-        <DateTimePicker value={data} onChange={handleCalendar} mode="date" textID="dateTimePicker" />  
-     
-      )}
-
-    </View>
-    <View style={styles.inputView}> 
-<TextInput placeholder="Observacoes" style={styles.inputObservacao} value={observacao} onChangeText={setObservacao}
-/>
-    </View>
-    <View style={styles.contentButtons}> 
-<Button title="Salvar" />
-<Button title="Continuar" />
-<Button title="Cancelar" onPress={() =>navigation.goBack()} />
-    </View>
-
-  </View>
- );
-}
 const styles = StyleSheet.create({
-content: {
-  flex:1,
-  justifyContent:"center",
-  alignItems:"center",
-  padding:10,
-},
-inputView:{
-  borderColor: 'black',
-  borderWidth: 1,
-  margin: 10,
-  alighItems: "center",
-  flexDirection: "row",
-  padding: 10,
-},
-     contentButtons: {
-      flex:1,
-      
-      gap: 10,
-      justifyContent: "space-around",
-     },
-     inputValor: {
-     textAlign: "right",
-     padding: 10,
-     },
-     inputData: {
-       width: "100%",
-       textAlign: "center",
-       fontFamily : "regular",
-       fontSize: 20,
-        padding: 10,
-     },
-     inputObservacao: {
-      fontFamily : "regular",
-      fontSize: 16,
-      flex:1,
-      lineHeight: 20,
-   
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingTop: 50,        
+        alignItems: "center",
+        textAlign: 'center',
+
+    },
+    titulo: {
+        fontFamily: 'MontserratRegular',
+        fontSize: 24,
+        color: '#444',
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    containerprincipal: {
+        width: "90%",
+        marginLeft: "5%",
+        backgroundColor: "#ffffff",
+        borderRadius: 16,
+        padding: 20,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 6,
+        elevation: 6,
+        marginTop: "20%",
+    },
+    inputView: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#fafafa',
+        borderRadius: 12,
+        padding: 12,
+        marginVertical: 8,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    inputValor: {
+        flex: 1,
+        fontSize: 17,
+        color: '#555',
+        textAlign: "right",
+        marginLeft: 10,
+    },
+    inputrecibo: {
+        flex: 1,
+        fontSize: 17,
+        color: '#555',
+        textAlign: "right",
+        marginLeft: 10,
+    },
+    inputData: {
+        flex: 1,
+        fontSize: 17,
+        color: '#555',
+        paddingLeft: 10,
+    },
+    inputObservacao: {
+        flex: 1,
+        fontSize: 17,
+        color: '#666',
+        paddingLeft: 10,
+        lineHeight: 22,
+    },
+    picker: {
+        flex: 1,
+        fontSize: 17,
+        color: '#333',
+    },
+    botaoContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 20,
+    },
+    botao: {
+        backgroundColor: '#6a5acd',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        alignItems: 'center',
+        width: '48%',
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 4,
+    },
+    textobotao: {
+        color: '#ffffff',
+        fontFamily: 'OpenSansMedium',
+        fontSize: 16,
+    },
 });

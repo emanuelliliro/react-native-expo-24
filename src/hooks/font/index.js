@@ -1,42 +1,40 @@
 import { useFonts } from "expo-font";
 import { createContext, useContext } from "react";
-import { ActivityIndicator, BackHandler, Text, View } from "react-native";
+import { ActivityIndicator,Text, View } from "react-native";
 
 const FontContext = createContext({});
 
-export function FontProvider({ children }) {
-  const [loaded, error] = useFonts({
-    regular: require("../../assets/fonts/Montserrat-Regular.ttf"),
-    bold: require("../../assets/fonts/Montserrat-Bold.ttf"),
-    black: require("../../assets/fonts/Montserrat-Black.ttf"),
-    semibold: require("../../assets/fonts/Montserrat-SemiBold.ttf"),
-    light: require("../../assets/fonts/Montserrat-Light.ttf"),
-    medium: require("../../assets/fonts/Montserrat-Medium.ttf"),
-    thin : require ("../../assets/fonts/Montserrat-Thin.ttf"),
-    extralight : require ("../../assets/fonts/Montserrat-Thin.ttf"),
-    italic : require ("../../assets/fonts/Montserrat-Italic.ttf"),
-    bolditalic : require ("../../assets/fonts/Montserrat-BoldItalic.ttf"),
-    blackitalic : require ("../../assets/fonts/Montserrat-BlackItalic.ttf"),
-  });
+export function FontProvider({children}) {
 
-  if (!loaded && !error) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text style={{ fontSize: 28, marginTop: 15 }}>Carregando as fontes</Text>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
+    const [loaded, error] = useFonts({
+        BonaNovaSCRegular: require("../../assets/fonts/BonaNovaSC-Regular.ttf"),
+        MontserratRegular: require("../../assets/fonts/Montserrat-Regular.ttf"),
+        MontserratLight: require("../../assets/fonts/Montserrat-Light.ttf"),
+        OpenSansMedium: require("../../assets/fonts/OpenSans-Medium.ttf"),
+        OpenSansLight: require("../../assets/fonts/OpenSans-Light.ttf"),
+        RobotoRegular: require("../../assets/fonts/Roboto-Regular.ttf"),
+        RobotoLight: require("../../assets/fonts/Roboto-Light.ttf"),
+        RobotoMedium: require("../../assets/fonts/Roboto-Medium.ttf"),
+    });
 
-  return (
-    <FontContext.Provider value={{ loaded }}>{children}</FontContext.Provider>
-  );
-}
+    if (!loaded && !error) {
+       return (
+        <View style= {{flex:1, justifyContent:"center", alignItems: "center"}}>
+            <Text style={{fontSize: 28, marginTop: 15}}>  {/*Pagina de carregamento*/}
+                Carregando as fontes 
+            </Text>
+            <ActivityIndicator size="large" color= "#0000ff"/> 
+       </View>
+      );
+      }
+
+      return <FontContext.Provider value={{ loaded }}>{children}</FontContext.Provider>;
+    }
 
 export function useFont() {
-  const context = useContext(FontContext);
-  if (!context) {
-    throw new Error("useFont must be within a FontProvider");
-  }
-  return context;
+    const context = useContext(FontContext);
+    if(!context) {
+        throw new Error("useFont must be used within a FontProvider");
+    }
+    return context;
 }

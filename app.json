@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "react-native-expo-24",
-    "slug": "react-native-expo-24",
-    "scheme": "react-native-expo-24",
+    "name": "react-native-expo-2024",
+    "slug": "react-native-expo-2024",
+    "scheme": "react-native-expo-2024",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
@@ -10,7 +10,7 @@
     "splash": {
       "image": "./src/assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ddd"
     },
     "ios": {
       "supportsTablet": true
@@ -26,7 +26,13 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font", 
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
     ]
   }
 }
